@@ -8,21 +8,22 @@ import eu.soufiane.analytics.model.Visitor
 import eu.soufiane.analytics.utils.ipToInetAddress
 import kotlinx.coroutines.*
 import mu.KLogging
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.stereotype.Service
+import org.eclipse.microprofile.config.inject.ConfigProperty
 import java.net.URI
 import java.util.*
 import java.util.concurrent.Executors
+import javax.inject.Inject
+import javax.inject.Singleton
 
-@Service
+@Singleton
 class AnalyticsService(val indexService: IndexService) {
   companion object : KLogging()
 
-  @Value("\${analytics.include-ip}")
+  @JvmField
+  @ConfigProperty(name = "analytics.include-ip")
   var includeIp = false
 
-  @Autowired
+  @Inject
   lateinit var userAgentService: UserAgentService
 
   private val ipCountryDbReader: DatabaseReader

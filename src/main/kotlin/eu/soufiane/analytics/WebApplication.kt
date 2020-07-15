@@ -1,13 +1,14 @@
 package eu.soufiane.analytics
 
-import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.boot.runApplication
-import org.springframework.scheduling.annotation.EnableScheduling
+import io.quarkus.runtime.Quarkus
+import io.quarkus.runtime.annotations.QuarkusMain
 
-@SpringBootApplication
-@EnableScheduling
-class WebApplication
-
-fun main(args: Array<String>) {
-  runApplication<WebApplication>(*args)
+@QuarkusMain
+class WebApplication {
+  companion object {
+    @JvmStatic
+    fun main(args: Array<String>) {
+      Quarkus.run(*args)
+    }
+  }
 }

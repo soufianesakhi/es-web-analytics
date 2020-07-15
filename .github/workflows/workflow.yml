@@ -13,14 +13,15 @@ jobs:
       image: openjdk:14-jdk-alpine
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Git checkout
+      uses: actions/checkout@v2
 
     - name: Main build
       run: ./gradlew build -x test -i
 
     - name: Prepare tags
       id: docker_tags
-      run: echo "::set-output name=docker_tags::latest,$(ls build/libs/es-web-analytics-* | cut -d'-' -f4 | sed -e 's/\.jar$//')"
+      run: echo "::set-output name=docker_tags::latest,$(ls build/es-web-analytics-*.jar | cut -d'-' -f4)"
 
     - name: Docker build and push
       uses: docker/build-push-action@v1

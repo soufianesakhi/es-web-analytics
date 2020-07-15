@@ -4,49 +4,59 @@ import eu.soufiane.analytics.config.COROUTINE_EXCEPTION_HANDLER
 import eu.soufiane.analytics.model.Visitor
 import eu.soufiane.analytics.service.AnalyticsService
 import eu.soufiane.analytics.utils.getHeader
-import eu.soufiane.analytics.utils.remoteAddr
+import eu.soufiane.analytics.utils.ok
+import eu.soufiane.analytics.utils.toSingleValueMap
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import mu.KLogging
-import org.springframework.http.ResponseEntity
-import org.springframework.http.server.reactive.ServerHttpRequest
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RestController
+import org.jboss.resteasy.spi.HttpRequest
 import java.time.Instant
+import javax.ws.rs.GET
+import javax.ws.rs.POST
+import javax.ws.rs.Path
+import javax.ws.rs.Produces
+import javax.ws.rs.core.Context
+import javax.ws.rs.core.MediaType
+import javax.ws.rs.core.Response
 
 
-@RestController
+@Path("pageview")
+@Produces(MediaType.APPLICATION_JSON)
 class AnalyticsController(val analyticsService: AnalyticsService) {
 
   companion object : KLogging()
 
-  @PostMapping("pageview")
-  fun postPageView(request: ServerHttpRequest): ResponseEntity<Void> = getPageView(request)
+  @Context
+  lateinit var request: HttpRequest
 
-  @GetMapping("pageview")
-  fun getPageView(request: ServerHttpRequest): ResponseEntity<Void> {
+  @POST
+  fun postPageView(): Response = getPageView()
+
+  @GET
+  fun getPageView(): Response {
+    val visitor = request.getVisitor()
     GlobalScope.launch(COROUTINE_EXCEPTION_HANDLER) {
-      analyticsService.pageView(request.getVisitor())
+      analyticsService.pageView(visitor)
     }
-    return ResponseEntity.ok().build()
+    return ok()
   }
 
-  @GetMapping("pageview/dryrun")
-  fun getPageViewDryRun(request: ServerHttpRequest): ResponseEntity<Map<String, String>> {
+  @GET
+  @Path("dryrun")
+  fun getPageViewDryRun(): Response {
     return runBlocking {
       val pageView = analyticsService.pageView(request.getVisitor(), true)
-      ResponseEntity.ok(pageView)
+      ok(pageView)
     }
   }
 
-  private fun ServerHttpRequest.getVisitor() = Visitor(
-    ip = remoteAddr,
+  private fun HttpRequest.getVisitor() = Visitor(
+    ip = remoteAddress,
     date = Instant.now().toString(),
     userAgent = getHeader("user-agent") ?: "",
     page = getHeader("referer"),
-    otherParameters = queryParams.toSingleValueMap()
+    otherParameters = uri.queryParameters.toSingleValueMap()
   )
 
 }

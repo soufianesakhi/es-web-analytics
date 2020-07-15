@@ -11,17 +11,18 @@ import org.apache.http.auth.AuthScope
 import org.apache.http.auth.UsernamePasswordCredentials
 import org.apache.http.client.config.RequestConfig
 import org.apache.http.impl.client.BasicCredentialsProvider
+import org.eclipse.microprofile.config.inject.ConfigProperty
 import org.elasticsearch.client.RestClient
 import org.elasticsearch.client.RestHighLevelClient
 import org.elasticsearch.client.crudDao
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.stereotype.Service
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Singleton
 
-@Service
+@Singleton
 class IndexService(esConfiguration: ElasticsearchConfiguration) {
-  @Value("\${elasticsearch.index.append-date}")
+  @JvmField
+  @ConfigProperty(name = "elasticsearch.index.append-date")
   var appendIndexDate = false
 
   val pageViewsDAOs by lazy {

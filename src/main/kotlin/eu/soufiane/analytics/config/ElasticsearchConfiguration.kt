@@ -5,17 +5,17 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.ArrayNode
 import eu.soufiane.analytics.model.ESClientConfig
 import eu.soufiane.analytics.model.ElasticsearchCategory
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.context.annotation.Configuration
+import org.eclipse.microprofile.config.inject.ConfigProperty
 import java.io.File
 import java.util.*
+import javax.inject.Singleton
 import kotlin.collections.ArrayList
 
 typealias EsClientsMap = EnumMap<ElasticsearchCategory, MutableList<ESClientConfig>>
 
-@Configuration
+@Singleton
 class ElasticsearchConfiguration {
-  @Value("\${elasticsearch.config-file}")
+  @ConfigProperty(name = "elasticsearch.config-file")
   lateinit var filePath: String
 
   private val esClients: EsClientsMap by lazy {

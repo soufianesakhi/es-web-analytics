@@ -1,18 +1,19 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-  id("org.springframework.boot") version "2.3.1.RELEASE"
-  id("io.spring.dependency-management") version "1.0.9.RELEASE"
-  kotlin("jvm") version "1.3.72"
-  kotlin("plugin.spring") version "1.3.72"
-  kotlin("plugin.allopen") version "1.3.72"
+  id("io.quarkus")
+  kotlin("jvm")
+  kotlin("plugin.allopen")
 }
 
 group = "eu.soufiane"
-version = "1.0.0"
+version = "2.0.0"
 
 val javaVersion = JavaVersion.VERSION_11
 val elasticsearchVersion: String by project
+val quarkusPlatformGroupId: String by project
+val quarkusPlatformArtifactId: String by project
+val quarkusPlatformVersion: String by project
 
 repositories {
   mavenLocal()
@@ -21,10 +22,10 @@ repositories {
 }
 
 dependencies {
-  implementation("org.springframework.boot:spring-boot-starter-webflux")
-  testImplementation("org.springframework.boot:spring-boot-starter-test") {
-    exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
-  }
+  implementation("io.quarkus:quarkus-kotlin")
+  implementation("io.quarkus:quarkus-scheduler")
+  implementation("io.quarkus:quarkus-resteasy-jackson")
+  implementation(platform("$quarkusPlatformGroupId:$quarkusPlatformArtifactId:$quarkusPlatformVersion"))
 
   implementation(kotlin("stdlib-jdk8"))
   implementation(kotlin("reflect"))
@@ -59,4 +60,23 @@ tasks.withType<KotlinCompile> {
     jvmTarget = javaVersion.toString()
     javaParameters = true
   }
+}
+
+quarkus {
+  setOutputDirectory("$projectDir/build/classes/kotlin/main")
+  setWorkingDir("$projectDir")
+}
+
+allOpen {
+  annotation("javax.ws.rs.Path")
+  annotation("javax.enterprise.context.ApplicationScoped")
+  annotation("io.quarkus.test.junit.QuarkusTest")
+}
+
+tasks.quarkusDev {
+  setSourceDir("$projectDir/src/main/kotlin")
+}
+
+tasks.test {
+  systemProperty("java.util.logging.manager", "org.jboss.logmanager.LogManager")
 }

@@ -4,32 +4,34 @@ import eu.soufiane.analytics.utils.badRequest
 import eu.soufiane.analytics.utils.internalError
 import kotlinx.coroutines.CoroutineExceptionHandler
 import mu.KLogging
-import org.springframework.http.ResponseEntity
-import org.springframework.http.converter.HttpMessageNotWritableException
-import org.springframework.web.bind.annotation.ControllerAdvice
-import org.springframework.web.bind.annotation.ExceptionHandler
-import org.springframework.web.bind.annotation.RestController
+import javax.ws.rs.NotFoundException
+import javax.ws.rs.WebApplicationException
+import javax.ws.rs.core.Response
+import javax.ws.rs.ext.ExceptionMapper
+import javax.ws.rs.ext.Provider
 
 
-@ControllerAdvice
-@RestController
-class ExceptionHandlers {
+@Provider
+class UncaughtThrowableExceptionMapper : ExceptionMapper<Throwable?> {
   companion object : KLogging()
+  override fun toResponse(t: Throwable?): Response {
+    return when(t) {
+      is WebApplicationException -> t.response
+      is Exception -> badRequest().also {
+        logger.error(t) { "Uncaught exception" }
+      }
+      else -> internalError().also {
+        logger.error(t) { "Internal Error" }
+      }
+    }
+  }
+}
 
-  @ExceptionHandler(HttpMessageNotWritableException::class)
-  fun handleHttpMessageNotWritableException(ex: HttpMessageNotWritableException): ResponseEntity<Any> {
-    logger.error { """Failed to write HTTP message: $ex""" }
+@Provider
+class NotFoundExceptionMapper: ExceptionMapper<NotFoundException> {
+  override fun toResponse(exception: NotFoundException?): Response {
     return badRequest()
   }
-
-  @ExceptionHandler(Exception::class)
-  fun handleException(ex: Exception): ResponseEntity<Any> {
-    logger.error(ex) { """$ex""" }
-    return badRequest()
-  }
-
-  @ExceptionHandler(Throwable::class)
-  fun handleThrowable(): ResponseEntity<Any> = internalError()
 }
 
 val KLogging.COROUTINE_EXCEPTION_HANDLER: CoroutineExceptionHandler

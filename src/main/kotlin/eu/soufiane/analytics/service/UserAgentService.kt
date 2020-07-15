@@ -3,11 +3,11 @@ package eu.soufiane.analytics.service
 import `is`.tagomor.woothee.Classifier
 import `is`.tagomor.woothee.DataSet.*
 import eu.soufiane.analytics.model.UserAgent
-import org.springframework.stereotype.Service
 import ua_parser.Client
 import ua_parser.Parser
+import javax.inject.Singleton
 
-@Service
+@Singleton
 class UserAgentService {
   companion object {
     private val parser = Parser()

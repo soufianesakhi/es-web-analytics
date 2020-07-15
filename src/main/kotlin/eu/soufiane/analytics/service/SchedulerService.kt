@@ -1,22 +1,24 @@
 package eu.soufiane.analytics.service
 
 import eu.soufiane.analytics.utils.toMegabytes
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.scheduling.annotation.Scheduled
-import org.springframework.stereotype.Service
+import io.quarkus.scheduler.Scheduled
+import org.eclipse.microprofile.config.inject.ConfigProperty
 import java.lang.management.ManagementFactory
 import java.lang.management.MemoryType
 import java.lang.management.MemoryUsage
 import java.time.Instant
 import java.util.*
+import javax.inject.Inject
+import javax.inject.Singleton
 
-@Service
+@Singleton
 class SchedulerService(val indexService: IndexService) {
 
-  @Value("\${monitoring.performance.enabled}")
+  @JvmField
+  @ConfigProperty(name = "monitoring.performance.enabled")
   var performanceMonitoringEnabled = false
 
-  @Scheduled(fixedRate = 5 * 60 * 1000)
+  @Scheduled(every = "5m")
   fun performanceMonitoring() {
     if (!performanceMonitoringEnabled) {
       return
