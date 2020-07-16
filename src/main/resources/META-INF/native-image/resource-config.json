@@ -1,0 +1,25 @@
+{
+  "resources": [
+    {
+      "pattern": ".*\\.xml$"
+    },
+    {
+      "pattern": ".*\\.json$"
+    },
+    {
+      "pattern": ".*\\.mmdb$"
+    },
+    {
+      "pattern": ".*\\.yaml"
+    },
+    {
+      "pattern": "META-INF/services/.*"
+    },
+    {
+      "pattern": "META-INF/.*.kotlin_module$"
+    },
+    {
+      "pattern": ".*.kotlin_builtins"
+    }
+  ]
+}

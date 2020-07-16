@@ -1,5 +1,8 @@
 package eu.soufiane.analytics.model
 
+import io.quarkus.runtime.annotations.RegisterForReflection
+
+@RegisterForReflection
 data class ESClientConfig(
   val username: String,
   val password: String,
@@ -9,7 +12,7 @@ data class ESClientConfig(
   val index: String
 )
 
-@Suppress("unused")
+@RegisterForReflection
 enum class ElasticsearchCategory {
   PAGE_VIEWS, PERFORMANCE;
 

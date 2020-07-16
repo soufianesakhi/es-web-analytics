@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
   id("io.quarkus")
+  id("java")
   kotlin("jvm")
   kotlin("plugin.allopen")
 }
@@ -40,6 +41,9 @@ dependencies {
   implementation("com.github.jillesvangurp:es-kotlin-wrapper-client:v0.12.0") // https://github.com/jillesvangurp/es-kotlin-wrapper-client
   implementation("com.github.seancfoley:ipaddress:5.3.1") // https://github.com/seancfoley/IPAddress
 
+  compileOnly("org.ow2.asm:asm:8.0.1")
+  compileOnly("org.graalvm.nativeimage:svm:20.1.0")
+
   constraints {
     listOf(
       "org.elasticsearch:elasticsearch",
@@ -65,6 +69,19 @@ tasks.withType<KotlinCompile> {
 quarkus {
   setOutputDirectory("$projectDir/build/classes/kotlin/main")
   setWorkingDir("$projectDir")
+}
+
+java {
+  sourceCompatibility = javaVersion
+  targetCompatibility = javaVersion
+}
+
+sourceSets {
+  main {
+    java {
+      setSrcDirs(listOf("$projectDir/src/main/kotlin"))
+    }
+  }
 }
 
 allOpen {
