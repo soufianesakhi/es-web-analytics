@@ -2,8 +2,18 @@ name: CI
 
 on:
   push:
+    paths:
+      - 'src/**'
+      - 'docker/**'
+      - '**.kts'
+      - '**.properties'
     branches: [ master ]
   pull_request:
+    paths:
+      - 'src/**'
+      - 'docker/**'
+      - '**.kts'
+      - '**.properties'
     branches: [ master ]
 
 jobs:

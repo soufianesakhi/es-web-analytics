@@ -1,0 +1,22 @@
+{
+  "page_views": [
+    {
+      "username": "elastic",
+      "password": "changeme",
+      "hostname": "elasticsearch",
+      "port": 9200,
+      "scheme": "http",
+      "index": "pageviews"
+    }
+  ],
+  "performance": [
+    {
+      "username": "elastic",
+      "password": "changeme",
+      "hostname": "elasticsearch",
+      "port": 9200,
+      "scheme": "http",
+      "index": "performance"
+    }
+  ]
+}

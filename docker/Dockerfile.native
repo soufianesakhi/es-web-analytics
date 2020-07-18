@@ -1,4 +1,6 @@
 FROM registry.access.redhat.com/ubi8/ubi-minimal:8.2
 COPY build/*-runner /app/es-web-analytics
 WORKDIR /app
+RUN mkdir /app/config
+COPY .data/config /app/config
 ENTRYPOINT exec /app/es-web-analytics $JAVA_OPTS
