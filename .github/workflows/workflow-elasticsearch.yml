@@ -1,0 +1,30 @@
+name: CI elasticsearch
+
+on:
+  push:
+    paths:
+      - 'docker/Dockerfile.elasticsearch'
+    branches: [ master ]
+  pull_request:
+    paths:
+      - 'docker/Dockerfile.elasticsearch'
+    branches: [ master ]
+
+env:
+  image_version: 1.0.0
+
+jobs:
+  es-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v2
+
+      - name: Docker build and push
+        uses: docker/build-push-action@v1
+        with:
+          username: soufianesakhi
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: soufianesakhi/web-analytics-elasticsearch
+          dockerfile: docker/Dockerfile.elasticsearch
+          tags: latest,${{ env.image_version }}
