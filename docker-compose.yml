@@ -1,0 +1,37 @@
+version: '2.4'
+services:
+
+  elasticsearch:
+    image: soufianesakhi/web-analytics-elasticsearch:latest
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+    ports:
+      - 9200:9200
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://elasticsearch:9200"]
+      interval: 5s
+      timeout: 10s
+      retries: 15
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.2.1
+    container_name: kibana
+    ports:
+      - 5601:5601
+    depends_on:
+      - elasticsearch
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+
+  es-web-analytics:
+    image: soufianesakhi/es-web-analytics:latest
+    container_name: es-web-analytics
+    environment:
+      - "JAVA_OPTS=-Xmx256m"
+    ports:
+      - 8080:8080
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
