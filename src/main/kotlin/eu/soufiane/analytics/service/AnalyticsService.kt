@@ -16,7 +16,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class AnalyticsService(val indexService: IndexService) {
+class AnalyticsService(private val indexService: IndexService) {
   companion object : KLogging()
 
   @JvmField
@@ -39,11 +39,9 @@ class AnalyticsService(val indexService: IndexService) {
     val otherParameters = data.otherParameters
     dto["date"] = data.date
     dto["page"] = data.page ?: ""
-    otherParameters["referer"]?.let { referer ->
+    (otherParameters["referer"] ?: "").let { referer ->
       dto["referer"] = referer
-      parseRefererDomain(referer)?.let { refererDomain ->
-        dto["refererDomain"] = refererDomain
-      }
+      dto["refererDomain"] = parseRefererDomain(referer)
     }
     val ip = otherParameters["ip"] ?: data.ip
     dto["ip"] = ip
@@ -100,16 +98,16 @@ class AnalyticsService(val indexService: IndexService) {
     }
   }
 
-  fun parseCountry(ip: String): CountryResponse = ipCountryDbReader.country(ipToInetAddress(ip))
+  private fun parseCountry(ip: String): CountryResponse = ipCountryDbReader.country(ipToInetAddress(ip))
 
   private fun generateId() = UUID.randomUUID().toString()
 
-  private fun parseRefererDomain(referer: String): String? {
+  private fun parseRefererDomain(referer: String): String {
     return try {
       if (referer.startsWith("android-app://")) {
         return referer
       }
-      val domain = URI(referer).host.toLowerCase()
+      val domain = URI(referer).host?.toLowerCase() ?: return ""
       if (domain.startsWith("www.google.")) {
         return "www.google.com"
       }
@@ -123,7 +121,7 @@ class AnalyticsService(val indexService: IndexService) {
       }
     } catch (e: Exception) {
       logger.error { "Error while parsing the referer domain for: $referer" }
-      null
+      ""
     }
   }
 }

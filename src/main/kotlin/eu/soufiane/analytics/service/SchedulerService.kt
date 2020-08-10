@@ -8,11 +8,10 @@ import java.lang.management.MemoryType
 import java.lang.management.MemoryUsage
 import java.time.Instant
 import java.util.*
-import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class SchedulerService(val indexService: IndexService) {
+class SchedulerService(private val indexService: IndexService) {
 
   @JvmField
   @ConfigProperty(name = "monitoring.performance.enabled")
