@@ -30,7 +30,7 @@ dependencies {
 
   implementation(kotlin("stdlib-jdk8"))
   implementation(kotlin("reflect"))
-  implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.6")
+  implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.9")
 
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
   implementation("com.google.guava:guava:27.0-jre")
