@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "eu.soufiane"
-version = "2.0.1"
+version = "2.0.2"
 
 val javaVersion = JavaVersion.VERSION_11
 val elasticsearchVersion: String by project
