@@ -26,6 +26,7 @@ dependencies {
   implementation("io.quarkus:quarkus-kotlin")
   implementation("io.quarkus:quarkus-scheduler")
   implementation("io.quarkus:quarkus-resteasy-jackson")
+  implementation("io.quarkus:quarkus-vertx-web")
   implementation(platform("$quarkusPlatformGroupId:$quarkusPlatformArtifactId:$quarkusPlatformVersion"))
 
   implementation(kotlin("stdlib-jdk8"))
