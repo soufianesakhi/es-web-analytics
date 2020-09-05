@@ -44,6 +44,8 @@ dependencies {
   compileOnly("org.ow2.asm:asm:8.0.1")
   compileOnly("org.graalvm.nativeimage:svm:20.1.0")
 
+  testImplementation("io.quarkus:quarkus-junit5")
+
   constraints {
     listOf(
       "org.elasticsearch:elasticsearch",
